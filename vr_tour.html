@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"><meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Сморреброд</title>
+    <link rel="stylesheet" href="/style_vr.css" />
+    <script src="script_vr.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.1.0/dist/aframe-extras.min.js"></script>
+  </head>
+  <body>
+    <header style="position: fixed; top: 0px; left: 0px; z-index: 999;">
+        <div class="hamburger-menu" onclick="toggleMenu()">
+            &#9776;
+        </div>
+        <a href="index.html"><img src="logo.png" style="width: 150px;"></a>
+    </header>
+    <div class="menu-container" id="menuContainer">
+        <ul>
+            <li><a href="history.html"">История</a></li>
+            <li><a href="contact.html">Контакты</a></li>
+          <li><a href="vr_tour.html">Виртуальный тур</a></li>
+        </ul>
+    </div>
+    <div id="start" style="position: absolute; top: 65px; left: 15px; z-index: 998;">
+
+      <button class="inf"  onclick="openInstructions()">!</button>
+      <div id="instructionsPopup" class="instruction">
+        <h2 style="font-family:title_font">Добро пожаловать в виртуальный тур гастробара "Сморреброд"</h2>
+        <p>Наш тур поможет вам познакомиться с интерьером, едой и напитками заведения.</p>
+        <p>Для осмотра локации поворачивайте телефон вокруг своей оси или вращайте локацию вручную с помощью пальцев.</p>
+        <p>Для перемещения по локациям необходимо найти места для перемещения и нажать на них.</p>
+        <p>Для ознакомления с меню необходимо познакомиться с барманами у бара на третьей локации. Для перехода на локацию ищи подсказку "Посмотреть меню".</p>
+        <button class="inf close" onclick="closeInstructions()">&lt;</button>
+      </div>
+    </div>
+    <div id="btnMenu" style="position: absolute; display:none; opacity:0; transition: opacity 0.5s ease;  top: 65px; right: 20px; z-index: 998;">
+      <button class="menu_button" onclick="closeMenu()">Закрыть</button>
+    </div>
+    <div id="drinksMenu" class="drinks menu " >
+      <h2 style="font-family:title_font; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+        не карта бара, а знаменитые записки алхимика
+      </h2>
+      <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+        легендарные элексиры
+      </div>
+      <div class="type_drinks">
+        <div class="product" onclick="showInfo(1,'drinks')">
+          <div>
+            фрея
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%84%D1%80%D0%B5%D1%8F.png?v=1714034961763">
+          <div>
+            370 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(2,'drinks')">
+          <div>
+            снорри
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%81%D0%BD%D0%BE%D1%80%D1%80%D0%B8.png?v=1714034956532">
+          <div>
+            390 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(3,'drinks')" >
+          <div>
+            нордис
+          </div> 
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BD%D0%BE%D1%80%D0%B4%D0%B8%D1%81.png?v=1714034955506">
+          <div>
+            430 ₽
+          </div>
+        </div>        
+        <div class="product" onclick="showInfo(4,'drinks')">
+          <div>
+            стурла
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%81%D1%82%D1%83%D1%80%D0%BB%D0%B0.png?v=1714034957687">
+          <div>
+            430 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(5,'drinks')">
+          <div>
+            альва
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B0%D0%BB%D1%8C%D0%B2%D0%B0.png?v=1714034933298">
+          <div>
+            390 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(6,'drinks')">
+          <div>
+            дагмар
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B4%D0%B0%D0%B3%D0%BC%D0%B0%D1%80.png?v=1714034936529">
+          <div>
+            390 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(7,'drinks')">
+          <div>
+            фрейдис
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%84%D1%80%D0%B5%D0%B9%D0%B4%D0%B8%D1%81.png?v=1714034960653">
+          <div>
+            390 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(8,'drinks')">
+          <div>
+            йорунд
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B9%D0%BE%D1%80%D1%83%D0%BD%D0%B4.png?v=1714034944940">
+          <div>
+            470 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(9,'drinks')">
+          <div>
+            драмбл
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B4%D1%80%D0%B0%D0%BC%D0%B1%D0%BB.png?v=1714034937641">
+          <div>
+            370 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(10,'drinks')">
+          <div>
+            ингви
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B8%D0%BD%D0%B3%D0%B2%D0%B8.png?v=1714034943929">
+          <div>
+            390 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(11,'drinks')">
+          <div>
+            ярбьёрг
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%8F%D1%80%D0%B1%D1%8C%D1%91%D1%80%D0%B3.png?v=1714034962829">
+          <div>
+            430 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(12,'drinks')">
+          <div>
+            варг
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B2%D0%B0%D1%80%D0%B3.png?v=1714034934566">
+          <div>
+            390 ₽
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(13,'drinks')">
+          <div>
+            тормунд
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%82%D0%BE%D1%80%D0%BC%D1%83%D0%BD%D0%B4.png?v=1714034959650">
+          <div>
+            470 ₽
+          </div>
+        </div>
+      </div>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+        снадобья для похода
+        </div>
+      <div class="type_drinks">
+        <div class="product" onclick="showInfo(14,'drinks')">
+         <div>
+            +100 к здоровью
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BA%20%D0%B7%D0%B4%D0%BE%D1%80%D0%BE%D0%B2%D1%8C%D1%8E.png?v=1714034946832">
+          <div>
+            6 шотов
+            <div>
+              450 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(15,'drinks')">
+          <div>
+            +100 к мане
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BA%20%D0%BC%D0%B0%D0%BD%D0%B5.png?v=1714034949002">
+          <div>
+            6 шотов
+            <div>
+              450 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(16,'drinks')">
+          <div>
+            +100 к выносливости
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BA%20%D0%B2%D1%8B%D0%BD%D0%BE%D1%81%D0%BB%D0%B8%D0%B2%D0%BE%D1%81%D1%82%D0%B8.png?v=1714034945931">
+          <div>
+            6 шотов
+            <div>
+              450 ₽
+          </div>
+          </div>
+        </div>
+      </div>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+        Снадобья для знатного рейда
+        </div>
+      <div class="type_drinks">
+        <div class="product" onclick="showInfo(17,'drinks')">
+          <div>
+            +10 к силе
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BA%20%D1%81%D0%B8%D0%BB%D0%B5.png?v=1714034951081">
+          <div>
+            6 шотов
+            <div>
+              550 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(18,'drinks')">
+          <div>
+            +10 к удаче
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BA%20%D1%83%D0%B4%D0%B0%D1%87%D0%B5.png?v=1714034953224">
+          <div>
+            6 шотов
+            <div>
+              550 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(19,'drinks')">
+          <div>
+            +10 к скорости
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BA%20%D1%81%D0%BA%D0%BE%D1%80%D0%BE%D1%81%D1%82%D0%B8.png?v=1714034952224">
+          <div>
+            6 шотов
+            <div>
+              550 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(20,'drinks')">
+          <div>
+            +10 к ловкости
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BA%20%D0%BB%D0%BE%D0%B2%D0%BA%D0%BE%D1%81%D1%82%D0%B8.png?v=1714034947980">
+          <div>
+            6 шотов
+            <div>
+              550 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(21,'drinks')">
+          <div>
+            +10 к очарованию
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BA%20%D0%BE%D1%87%D0%B0%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E.png?v=1714034950136">
+          <div>
+            6 шотов
+            <div>
+              550 ₽
+          </div>
+          </div>
+        </div>
+      </div>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+        снадобья героические
+        </div>
+      <div class="type_drinks">
+        <div class="product" onclick="showInfo(22,'drinks')">
+          <div>
+            за славу
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B7%D0%B0%20%D1%81%D0%BB%D0%B0%D0%B2%D1%83.png?v=1714034942900">
+          <div>
+            6 шотов
+            <div>
+              650 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(23,'drinks')">
+          <div>
+            за андрея млд
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B7%D0%B0%20%D0%BC%D0%BB%D0%B4.png?v=1714034940661">
+          <div>
+            6 шотов
+            <div>
+              650 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(24,'drinks')">
+          <div >
+            за андрея андреевича
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B7%D0%B0%20%D0%B0%D0%BD%D0%B4%D1%80%D0%B5%D1%8F.png?v=1714034938722">
+          <div>
+            6 шотов
+            <div>
+              650 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(25,'drinks')">
+          <div>
+            за вадима
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B7%D0%B0%20%D0%B2%D0%B0%D0%B4%D0%B8%D0%BC%D0%B0.png?v=1714034939745">
+          <div>
+            6 шотов
+            <div>
+              650 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(26,'drinks')">
+          <div>
+           за надежду 
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B7%D0%B0%20%D0%BD%D0%B0%D0%B4%D0%B5%D0%B6%D0%B4%D1%83.png?v=1714034941782">
+          <div>
+            6 шотов
+            <div>
+              650 ₽
+          </div>
+          </div>
+        </div>
+      </div>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+        снадобья мифические
+        </div>
+      <div class="type_drinks">
+        <div class="product" onclick="showInfo(27,'drinks')">
+          <div>
+            ветры йотунхейма
+          </div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%B2%D0%B5%D1%82%D1%80%D1%8B.png?v=1714034935571">
+          <div>
+            4 шота
+            <div>
+              650 ₽
+          </div>
+          </div>
+        </div>
+        <div class="product" onclick="showInfo(28,'drinks')">
+          <div>за теневых персонажей</div>
+          <img src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%82%D0%B5%D0%BD%D0%B5%D0%B2%D1%8B%D0%B5%20%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6%D0%B8.png?v=1714034958633">
+          <div>
+            4 шота
+            <div>
+              650 ₽
+          </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <div id="foodMenu" class="food menu">
+        <h2 style="font-family:title_font; text-align: center; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+          Подходим-заказываем
+        </h2>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+          Сморреброды
+        </div>
+        <div class="product_f">
+          <div class="type_food">С беконом, яйцом пашот и картофелем&nbsp;<span style="font-family:title_font; margin: 5px 0px;">|&nbsp;320&nbsp;₽</span></div>
+          <div class="type_food">С сельдбю, картофелем и соленmями&nbsp;<span style="font-family:title_font; margin: 5px 0px;">|&nbsp;320&nbsp;₽</span></div>
+          <div class="type_food">С бужениной и вялеными томатами&nbsp;<span style="font-family:title_font; margin: 5px 0px;">|&nbsp;320&nbsp;₽</span></div>
+          <div class="type_food">С тар-таром из телятины ии перепелиным яйцом&nbsp;<span style="font-family:title_font; margin: 5px 0px;">|&nbsp;320&nbsp;₽</span></div>
+        </div>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+          Горячие блюда
+        </div>
+        <div class="product_f">
+          <div class="type_food">Картошка-гармошка с бужениной&nbsp;<span style="font-family:title_font;">|&nbsp;470&nbsp;₽</span></div>
+          <div class="type_food">Жарёха из картофеля со свининой&nbsp;<span style="font-family:title_font;">|&nbsp;430&nbsp;₽</span></div>
+          <div class="type_food">Лепешка с фаршем и сыром&nbsp;<span style="font-family:title_font;">|&nbsp;430&nbsp;₽</span></div>
+          <div class="type_food">Фрикадельки с птитимом в сливочном соусе&nbsp;<span style="font-family:title_font; ">|&nbsp;470&nbsp;₽</span></div>
+          <div class="type_food">Булочка со свининой и творожным сыром&nbsp;<span style="font-family:title_font;">|&nbsp;490&nbsp;₽</span></div>
+          <div class="type_food">Вафля с куриным шницелем и яйцом пашот&nbsp;<span style="font-family:title_font;">|&nbsp;430&nbsp;₽</span></div>
+          <div class="type_food">Фри с фаршем и моцареллой&nbsp;<span style="font-family:title_font;">|&nbsp;470&nbsp;₽</span></div>
+          <div class="type_food">Рёбрышки в карамели из колы с попкорном&nbsp;<span style="font-family:title_font;">|&nbsp;490&nbsp;₽</span></div>
+          <div class="type_food">Картофельные клецки с фаршем и грибочками <span style="font-family:title_font;">|&nbsp;490&nbsp;₽</span></div>
+          <div class="type_food">Пряная грудка с картофелем и фасолью <span style="font-family:title_font;">|&nbsp;470&nbsp;₽</span></div>
+        </div>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+          Закуски к пенному
+        </div>
+        <div class="product_f">
+          <div class="type_food">Луковые колечки&nbsp;<span style="font-family:title_font;">|&nbsp;270&nbsp;₽</span></div>
+          <div class="type_food">Фри с сырным соусом&nbsp;<span style="font-family:title_font;">|&nbsp;270&nbsp;₽</span></div>
+          <div class="type_food">Чипс&Стрипс&nbsp;<span style="font-family:title_font;">|&nbsp;370&nbsp;₽</span></div>
+          <div class="type_food">Креветки в хрустящей панировке&nbsp;<span style="font-family:title_font;">|&nbsp;470&nbsp;₽</span></div>
+          <div class="type_food">Картофельные дольки&nbsp;<span style="font-family:title_font;">|&nbsp;270&nbsp;₽</span></div>
+          <div class="type_food">Креветки в соусе из сгущенки и васаби&nbsp;<span style="font-family:title_font;">|&nbsp;470&nbsp;₽</span></div>
+          <div class="type_food">Фирменные мясные чипсы&nbsp;<span style="font-family:title_font;">|&nbsp;370&nbsp;₽</span></div>
+          <div class="type_food">Жареный сыр косичка&nbsp;<span style="font-family:title_font;">&nbsp;|&nbsp;270&nbsp;₽</span></div>
+          <div class="type_food">Крылья в пивной глазури с картошкой фри&nbsp;<span style="font-family:title_font;">|&nbsp;370&nbsp;₽</span></div>
+        </div>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+          Сообразим на дружину
+        </div>
+        <div class="product_f">
+          <div class="type_food" style="font-family:title_font;">Вальдимар "эстет"&nbsp;|&nbsp;300&nbsp;₽
+            <div style="font-family:text_font">
+            сало с горчицей и маринованным луком
+            </div></div>
+          <div class="type_food" style="font-family:title_font;">Глеб "застольный"&nbsp;|&nbsp;420&nbsp;₽
+            <div style="font-family:text_font">
+            хорош под водочку: сельдь, соленое сало, маринованные овощи, горчица
+            </div></div>
+          <div class="type_food" style="font-family:title_font;">Харальд "во хмелю"&nbsp;|&nbsp;550&nbsp;₽
+            <div style="font-family:text_font">
+            крылышки, луковые кольца, фри, чипсы
+            </div></div>
+          <div class="type_food" style="font-family:title_font;">Эймунд "не евши, не жравши"&nbsp;|&nbsp;750&nbsp;₽
+            <div style="font-family:text_font;">
+            стрипсы, картофельные дольки, жареная тортилья, мясные чипсы, чесночные сухарики, попкорн
+            </div>
+          </div>
+          <div class="type_food" style="font-family:title_font;">Сигмунд "на всех рассчитавший"&nbsp;|&nbsp;1150&nbsp;₽
+            <div style="font-family:text_font">
+            охотничьи колбаски, картофельные чипсы, фри, крылышки, луковые кольца, чипсы из тортильи, сыр косичка, попкорн, огурчики
+            </div></div>
+          <div class="type_food" style="font-family:title_font;">Хродгар, "поляну накрывший"&nbsp;|&nbsp;1650&nbsp;₽
+            <div style="font-family:text_font">
+            Ребрышки в глазури, соленое сало, буженина, крылышки, стрипсы, жареная картошечка, охотничьи колбаски, маринованные овощи
+            </div></div>
+        </div>
+        <div style="font-family:title_font; font-size:17px; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+          Десерты
+        </div>
+        <div class="product_f">
+          <div class="type_food">Банановые пирожочки в сгущенке и клубничной крошке&nbsp;<span style="font-family:title_font;">|&nbsp;320&nbsp;₽</span></div>
+          <div class="type_food">Хрустящая вафля с мороженым и карамелью&nbsp;<span style="font-family:title_font;">|&nbsp;320&nbsp;₽</span></div>
+        </div>
+      <h2 style="font-family:title_font; text-align: center; margin: 7px 0px; text-shadow: 1px 1px 2px black;">
+          едим-кутим
+      </h2>
+    </div>
+      <div id="info">
+      <h1 style="font-family:title_font" id="infoName"></h1>
+      <img id="infoImage" src=" " alt="Изображение товара" style="width:120px; margin: -10px 0px;">
+      <p style="font-family:text_font" id="infoOpis"></p>
+      <p style="font-family:text_font" id="infoPrice"></p>
+        <div>
+          <button class="info_button" id="buttonDrinks" onclick="closeInfo('drinks')" style="display:none;">К барной карте</button>
+      <button id="buttonFood" onclick="closeInfo('food')" style="display:none;">В меню</button>
+        </div>
+
+    </div>
+
+      <!-- Блок с информацией -->
+    <a-scene>   
+      <!-- фон -->
+      <a-sky id="sky" src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/first_location.jpg?v=1710871787049">
+      </a-sky>
+      <!-- локация 1 -->
+      <a-image
+        class="planes clickable"
+        id="plane12"
+        height="4"
+        width="4"
+        position="11.7 -2.1 0"
+        rotation="-80 -80 0"
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/circle.png?v=1710864432610"
+        two-location
+      ></a-image>
+      <a-image
+        class="planes clickable"
+        id="plane13"
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/circle.png?v=1710864432610"
+        height="8"
+        width="8"
+        position="2 -5.1 -23"
+        rotation="-90 -80 0"
+        three-location
+      ></a-image>
+      <a-image
+        class="planes"
+        id="menu1"
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BC%D0%B5%D0%BD%D1%8E2.png?v=1713006680980"
+        height="6"
+        width="7"
+        position="2 -0.1 -23"
+      ></a-image>
+      <!-- локация 2 --> 
+      <a-image
+        class="planes clickable"
+        id="plane21" 
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/circle.png?v=1710864432610"
+        height="0"
+        width="0"
+        position="4 -5 -25"
+        rotation="-90 -50 30"
+        one-location
+      ></a-image>
+      <a-image
+        class="planes clickable"
+        id="plane23"        
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/circle.png?v=1710864432610"
+        height="0"
+        width="0"
+        position="11.7 -2.1 -2"
+        rotation="-80 -80 0"
+        three-location
+      ></a-image>
+      <a-image
+        class="planes"
+        id="menu2"        
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BC%D0%B5%D0%BD%D1%8E2.png?v=1713006680980"
+        height="0"
+        width="0"
+        position="17.7 0 -3"
+        rotation="0 -90 -1"
+      ></a-image>
+    <!-- локация 3 --> 
+      <a-image
+        class="planes clickable"
+        id="plane31" 
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/circle.png?v=1710864432610"
+        height="0"
+        width="0"
+        position="9 3 9"
+        rotation="0 -80 0"
+        one-location
+      ></a-image>
+      <a-image
+        class="planes clickable"
+        id="plane32" 
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/circle.png?v=1710864432610"
+        height="0"
+        width="0"
+        position="55 -36 -53"
+        rotation="-80 -90 0"
+        two-location
+      ></a-image>
+      <a-image
+        class="planes clickable"
+        id="plane3_bar12" 
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BF%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80%D0%B5%D1%82%D1%8C.png?v=1714074539702"
+        height="0"
+        width="0"
+        position="-34 13 9"
+        rotation="180 -80 180"
+        open-menu-drinks
+      ></a-image>
+      <a-image
+        class="planes"
+        id="plane3_bar11" 
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%87%D1%82%D0%BE%20%D0%BF%D0%B8%D1%82%D1%8C.png?v=1714073007704"
+        height="0"
+        width="0"
+        position="-35 11.9 2"
+        rotation="0 90 0"
+      ></a-image>
+
+
+      <a-image
+        class="planes clickable"
+        id="plane3_bar22" 
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D0%BF%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80%D0%B5%D1%82%D1%8C.png?v=1714074539702"
+        height="0"
+        width="0"
+        position="-6 8 52"
+        rotation="180 0 180"
+        open-menu-food
+      ></a-image>
+      <a-image
+        class="planes"
+        id="plane3_bar21" 
+        src="https://cdn.glitch.global/ec91ced5-6ef7-497a-a10e-8f8f25b35ddc/%D1%87%D1%82%D0%BE%20%D0%B5%D1%81%D1%82%D1%8C.png?v=1714074289978"
+        height="0"
+        width="0"
+        position="0 12.5 60"
+        rotation="0 180 0"
+      ></a-image>
+      <a-camera id="camera" cursor="rayOrigin: mouse">
+      </a-camera>
+    </a-scene>
+  </body>
+</html>
